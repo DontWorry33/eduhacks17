@@ -45,6 +45,8 @@ def index():
 @socketio.on('my_event', namespace='/test')
 def test_message(message):
     session['receive_count'] = session.get('receive_count', 0) + 1
+    print("Session: ", session)
+    print("Message: ", message)
     emit('my_response',
          {'data': message['data'], 'count': session['receive_count']})
 
@@ -61,6 +63,10 @@ def test_broadcast_message(message):
 def join(message):
     join_room(message['room'])
     session['receive_count'] = session.get('receive_count', 0) + 1
+    session['user'] = message['username']
+    session['room'] = message['room']
+    print("Session: ", session)
+    print("Message: ", message)
     emit('my_response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
           'count': session['receive_count']})
@@ -87,6 +93,8 @@ def close(message):
 @socketio.on('my_room_event', namespace='/test')
 def send_room_message(message):
     session['receive_count'] = session.get('receive_count', 0) + 1
+    print("Session: ", session)
+    print("Message: ", message)
     emit('my_response',
          {'data': message['data'], 'count': session['receive_count']},
          room=message['room'])
