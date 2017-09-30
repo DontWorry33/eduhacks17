@@ -19,7 +19,7 @@ socketio = SocketIO(app)
 CORS(app)
 
 
-app.config.from_object('settings')
+#app.config.from_object('settings')
 
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
