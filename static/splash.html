@@ -111,8 +111,8 @@
           <h3>CREATE A ROOM</h3>
           <div id="room-code">
             <p>Room Name:</p>
-            <input v-model="message" placeholder="Room Name">
-						<input type="submit" value="Create Room">
+            <input v-model="message" id="room_name_create" placeholder="Room Name">
+						<input type="submit" id="createRoom_button" value="Create Room" onclick="goToCreatePage()">
           </div>
         </div>
       </div>
@@ -141,6 +141,14 @@
 
 
 <!-- javscript js -->
+<script>
+function goToCreatePage(){
+	if($('#room_name_create').val() != ''){
+			window.location = "createroom.html";
+			localStorage.setItem("roomNameStorage", $('#room_name_create').val());
+	}
+}
+</script>
 <script src="css/2083_steak_house/js/jquery.js"></script>
 <script src="css/2083_steak_house/js/bootstrap.min.js"></script>
 

@@ -63,7 +63,11 @@
     <div id="main">
       <form id="create" method="POST" action='#'>
         <p>Room Name:</p>
-        <input class="form-control" type="text" id="room_name">
+        <p id=actualRoomName>room_name</p>
+        <script>
+        window.onload = localStorage.getItem("roomNameStorage");
+        document.getElementById('actualRoomName').innerHTML = localStorage.getItem("roomNameStorage");
+        </script>
         <p>Room Title:</p>
         <input class="form-control" type="text" id="room_title"><br>
         <div id="question_table" class="table-responsive">
