@@ -9,7 +9,7 @@ from flask import url_for
 
 import os
 
-from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
+from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect, send
 from flask_cors import CORS
 
 
@@ -38,8 +38,11 @@ def get_room_by_name(room_name):
 
 @app.route('/python/<room_name>')
 def python(room_name):
-    print("python: ", room_name)
-    return render_template('skulpt.html', data=get_room_by_name(room_name))
+    print("python: "+ room_name)
+    room = get_room_by_name(room_name)
+    roomcpy = room.copy()
+    roomcpy["solutions"] = {}
+    return render_template('skulpt.html', data=roomcpy)
 
 
 @app.route('/')
@@ -78,13 +81,17 @@ def create_room(message):
         return # room already exists!
 
     questions = message["questions"]
+    questions_struct={}
+    for x in range(len(questions)):
+        questions_struct[x] = str(questions[x])
     solutions = message["solutions"]
 
     if len(questions) != len(solutions):
         print("length of q does not match length of s")
         return; # no solution or question???
 
-    room_list[message["room"]] = {"users": [], "questions": {0}, "solutions": {1}, "title": "{2}".format(questions, solutions, message["title"])}
+    room_list[message["room"]] = {"name": message["room"], "users": [], "questions": questions_struct, "solutions": solutions,
+                                      "title": "RANDOM QUESTIONS!!!"}
     join_room(message)
 
 
@@ -116,16 +123,15 @@ def join(message):
 
     questions=["what is 2+2", "print 1-5 in a list", "print a-z as keys and their corresponding ascii values as values in a dictionary"]
     solutions = [4, [1, 2, 3, 4, 5], sol2()]
+    solutions = [str(x) for x in solutions]
     questions_struct={}
-    solutions_struct={}
     for x in range(len(questions)):
-        questions_struct[x] = questions[x]
-        solutions_struct[x] = solutions[x]
+        questions_struct[x] = str(questions[x])
     #print(questions_struct)
 
     # create a new room with initial parameters?
     if message["room"] not in room_list:
-        room_list[message["room"]] = {"users": [], "questions": questions_struct, "solutions": solutions_struct,
+        room_list[message["room"]] = {"name": message["room"], "users": [], "questions": questions_struct, "solutions": solutions,
                                       "title": "RANDOM QUESTIONS!!!"}
 
     # if (message["room"] not in room_list):
@@ -139,8 +145,9 @@ def join(message):
     curr_room["users"].append(message["username"])
 
     print(my_session)
+    print(' '.join(rooms()))
 
-    emit('redirect', {'url': url_for('python', room_name=message["room"])})
+    socketio.emit('redirect', {'url': url_for('python', room_name=message["room"])}, room=message['room'])
 
     #emit('my_response',
     #     {'data': '{0} has joined room: {1} says: {2}'.format(message["username"], message["room"], curr_room["welcome"]),
@@ -150,6 +157,7 @@ def join(message):
 @socketio.on('leave', namespace='/test')
 def leave(message):
     leave_room(message['room'])
+    print("leaving room")
     my_session['receive_count'] = my_session.get('receive_count', 0) + 1
     emit('my_response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
@@ -158,11 +166,41 @@ def leave(message):
 
 @socketio.on('close_room', namespace='/test')
 def close(message):
+    print("CLOSING ROOM")
     my_session['receive_count'] = my_session.get('receive_count', 0) + 1
     emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
                          'count': my_session['receive_count']},
          room=message['room'])
     close_room(message['room'])
+
+
+@socketio.on('verify_answer', namespace='/test')
+def verify_answer(message):
+    my_session['receive_count'] = my_session.get('receive_count', 0) + 1
+    room_name = message["room"]
+    answer = message["answer"]
+    question_index = int(message["question_index"])
+    curr_room = get_room_by_name(room_name)
+    print(room_name)
+    print(curr_room["solutions"][question_index])
+
+    if answer == curr_room["solutions"][question_index]:
+        print('answer in sols')
+
+        try:
+            stats = curr_room["analytics"]
+        except:
+            curr_room["analytics"] = {}
+            stats = curr_room["analytics"]
+
+        emit('my_response',
+             {'verify': True}, room=room_name)
+        return
+
+    print('answer not in sols')
+    emit('my_response',
+         {'verify': False}, room=room_name)
+
 
 
 @socketio.on('my_room_event', namespace='/test')
@@ -181,6 +219,7 @@ def send_room_message(message):
 @socketio.on('disconnect_request', namespace='/test')
 def disconnect_request():
     my_session['receive_count'] = my_session.get('receive_count', 0) + 1
+    print("DISCONNECT")
     emit('my_response',
          {'data': 'Disconnected!', 'count': my_session['receive_count']})
     disconnect()
