@@ -1,7 +1,13 @@
-var main = new Vue({
-    el: '#main',
+var codedata = new Vue({
+    el: '#codedata',
     data: {
-        question: 'question placeholder',
-        output: 'output placeholder'
+        code: 'enter your code here',
+        output: 'output'
     }
+})
+var question= new Vue({
+  el: '#question',
+  data: {
+    questionsupplied: 'Question supplied... '
+  }
 })

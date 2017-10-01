@@ -5,15 +5,10 @@ var roomcode = new Vue({
     }
 })
 
-var username= new Vue({
-    el: '#user-name',
+var joinroom = new Vue({
+    el: '#join-room',
     data: {
-        message: 'Username:'
-    }
-})
-var roomname = new Vue({
-    el: '#room-name',
-    data: {
-        message: 'Room Name:'
+        username: 'Enter a username...',
+        roomname: 'Enter the room name you wish to join...'
     }
 })
