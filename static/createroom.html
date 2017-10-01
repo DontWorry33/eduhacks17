@@ -13,14 +13,32 @@
 
     <div id="main">
       <form id="create" method="POST" action='#'>
-        <p>Room Name:</p> <br>
+        <p>Room Name:</p>
         <input type="text" id="room_name">
-        <p>Room Title:</p> <br>
+        <p>Room Title:</p>
         <input type="text" id="room_title">
-        <p> Question: </p> <br>
-        <input type="text" id="question">
-        <p> Required Output: </p>
-        <input type="text" id="output"><br>
+        <div id="question_table">
+          <table class="question_table">
+            <thead>
+              <tr>
+                <td><strong>Question</strong></td>
+                <td><strong>Answer</strong></td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in rows">
+                <td><input id="question" type="text" v-model="row.Question"></td>
+                <td><input id="answer" type="text" v-model="row.Answer"></td>
+                <td><a @click="removeRow(index)">Remove</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <button type="button" class="button btn-primary" @click="addRow">Add row</button>
+          </div>
+        </div>
+
         <input type="submit" value="Create Room">
       </form>
     </div>

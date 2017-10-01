@@ -31,9 +31,43 @@ $(document).ready(function() {
         $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
     });
 
+    console.log(socket);
+
+
+    var question_table  = new Vue({
+      el: "#question_table",
+      data: {
+        rows: [
+          {Question: "",Answer: ""},
+        ]
+      },
+      methods:{
+        addRow: function(){
+          this.rows.push({Question:"",Answer:""});
+        },
+        removeRow: function(index){
+          this.rows.splice(index, 1);
+        }
+      }
+    });
 
     $('form#create').submit(function(event) {
-      socket.emit('create_room', {room: $('#room_name').val(), title: $('#room_title').val(), questions: $('#question').val(), solutions: $('#output').val()});
+      var Questions = [];
+      var Answers = [];
+      for(i=0; i< question_table.rows.length; i++){
+        Questions.push({"question":  JSON.stringify(question_table.rows[i].Question)});
+        Answers.push({"answer": JSON.stringify(question_table.rows[i].Answer)});
+      }
+      console.log(Questions);
+      console.log(Answers);
+      socket.emit('create_room', {room: $('#room_name').val(), title: $('#room_title').val(), questions: Questions, solutions: Answers});
       return false;
-    }
-}
+    })
+
+
+
+
+
+
+
+})
