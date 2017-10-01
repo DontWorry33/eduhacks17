@@ -55,8 +55,8 @@ $(document).ready(function() {
         var Questions = [];
         var Answers = [];
         for (i = 0; i < question_table.rows.length; i++) {
-            Questions.push(JSON.stringify(question_table.rows[i].Question));
-            Answers.push(JSON.stringify(question_table.rows[i].Answer));
+            Questions.push(String(question_table.rows[i].Question));
+            Answers.push(String(question_table.rows[i].Answer));
         }
         console.log(Questions);
         console.log(Answers);
