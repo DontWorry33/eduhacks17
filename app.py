@@ -116,7 +116,7 @@ def create_room(message):
         return; # no solution or question???
 
     room_list[message["room"]] = {"name": message["room"], "users": [], "questions": questions_struct, "solutions": solutions,
-                                      "title": "RANDOM QUESTIONS!!!"}
+                                      "title": message["title"]}
     join_room(message['room'])
 
 
@@ -166,7 +166,7 @@ def join(message):
         curr_room = room_list[message["room"]]
     except:
         return
-    
+
     if (message["username"] in curr_room["users"]):
         return # username already exists in the room!
 

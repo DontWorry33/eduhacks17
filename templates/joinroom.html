@@ -106,9 +106,12 @@
     <!-- Question and Answer Section -->
     <section id="about" class="parallax-section ">
         <div class="container">
+            <div style="align: left" id="roomtitle">
+              <p style="font-size:30px;" id="roomTitle_text">{{data.title}}</p><br>
+            </div>
             {% for x in data.questions %}
             <div class="row">
-                <p style="font-size:30px;"><strong>Question:</strong></p>
+                <p style="font-size:25px;" id="question_number"><strong>Question {{x+1}}:</strong></p>
                 <!-- <textarea class="input-lg" v-model='questionsupplied' readonly></textarea> -->
                 <p>{{ data.questions[x] }}</p>
                 <div class="contact-form wow fadeInUp" data-wow-delay="0.3s">
