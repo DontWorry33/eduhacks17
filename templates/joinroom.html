@@ -104,18 +104,19 @@
 
     <!-- Question and Answer Section -->
     <section id="about" class="parallax-section ">
+
         <div class="container">
             {% for x in data.questions %}
-            <div class="row">
+            <div class="row top-buffer">
                 <p style="font-size:30px;"><strong>Question:</strong></p>
                 <!-- <textarea class="input-lg" v-model='questionsupplied' readonly></textarea> -->
-                <p>{{ data.questions[x] }}</p>
+                <p >{{ data.questions[x] }}</p>
                 <div class="contact-form wow fadeInUp" data-wow-delay="0.3s">
                     <br><br>
                     <form id="contact-form" method="post" action="#">
                         <div id="codedata">
                             <div class="col-md-8">
-                                <p>Enter your code here</p><br>
+                                <p>Enter your solution here:</p><br>
                             </div>
                             <div class="col-md-4">
                                 <p>Output</p><br>
@@ -134,7 +135,7 @@
                 </div>
             </div>
             {% endfor %}
-            
+
             <form id="submitanswer" method="POST" action='#'>
                 <input type="submit" style="font-size: 18px;" value="Submit"></input>
             </form>
@@ -168,7 +169,7 @@
     {% for x in data.questions %}
     var editor = CodeMirror.fromTextArea(document.getElementById('code_editor{{x}}'), {
         lineNumbers: true
-    }); 
+    });
 
     editors[parseInt({{x}})] = editor
     {% endfor %}
