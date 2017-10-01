@@ -92,7 +92,7 @@ def create_room(message):
 
     room_list[message["room"]] = {"name": message["room"], "users": [], "questions": questions_struct, "solutions": solutions,
                                       "title": "RANDOM QUESTIONS!!!"}
-    join_room(message)
+    join_room(message['room'])
 
 
 def sol():
@@ -147,7 +147,7 @@ def join(message):
     print(my_session)
     print(' '.join(rooms()))
 
-    socketio.emit('redirect', {'url': url_for('python', room_name=message["room"])}, room=message['room'])
+    emit('redirect', {'url': url_for('python', room_name=message["room"])}, room=message['room'])
 
     #emit('my_response',
     #     {'data': '{0} has joined room: {1} says: {2}'.format(message["username"], message["room"], curr_room["welcome"]),
