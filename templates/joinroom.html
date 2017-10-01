@@ -92,7 +92,7 @@
           <span class="icon icon-bar"></span>
           <span class="icon icon-bar"></span>
         </button>
-                <a href="#" class="navbar-brand">Learn2Hack</a>
+                <a href="/" class="navbar-brand">Learn2Hack</a>
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -134,7 +134,7 @@
                 </div>
             </div>
             {% endfor %}
-            
+
             <form id="submitanswer" method="POST" action='#'>
                 <input type="submit" style="font-size: 18px;" value="Submit"></input>
             </form>
@@ -168,7 +168,7 @@
     {% for x in data.questions %}
     var editor = CodeMirror.fromTextArea(document.getElementById('code_editor{{x}}'), {
         lineNumbers: true
-    }); 
+    });
 
     editors[parseInt({{x}})] = editor
     {% endfor %}
