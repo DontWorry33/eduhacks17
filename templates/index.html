@@ -11,12 +11,15 @@
             // Socket.IO will multiplex all those connections on a single
             // physical channel. If you don't care about multiple channels, you
             // can set the namespace to an empty string.
-            namespace = '/test';
+            var namespace = '/test';
 
             // Connect to the Socket.IO server.
             // The connection URL has the following format:
             //     http[s]://<domain>:<port>[/<namespace>]
             var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+            console.log(socket)
+            num=15
             console.log(location.protocol + '//' + document.domain + ':' + location.port + namespace)
 
             // Event handler for new connections.
@@ -27,6 +30,7 @@
             });
 
             socket.on('redirect', function (data) {
+                console.log(data)
                 window.location = data.url;
             });
 
@@ -36,7 +40,7 @@
             // section of the page.
             socket.on('my_response', function(msg) {
                 console.log("printing from index html: "+ msg)
-                $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
+                //$('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
             });
 
             // Interval function that tests message latency by sending a "ping"

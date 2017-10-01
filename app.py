@@ -6,6 +6,8 @@ from flask import abort
 from flask import session
 from flask import render_template
 from flask import url_for
+from flask import redirect
+
 
 import os
 
@@ -17,6 +19,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 socketio = SocketIO(app)
 CORS(app)
+
+
 my_session = {}
 
 #app.config.from_object('settings')
@@ -29,21 +33,42 @@ if SECRET_KEY == None:
     SECRET_KEY = app.config.get('SECRET_KEY')
 
 
-app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SECRET_KEY'] = "12345"
+app.config['SERVER_NAME'] = "127.0.0.1:5000"
 
 
 def get_room_by_name(room_name):
-    rooms = my_session["rooms"]
-    return rooms[room_name]
+    current_room = my_session["rooms"]
+    return current_room[room_name]
+
+# def python(room_name):
+#     print ("pyhton called")
+#
 
 @app.route('/python/<room_name>')
 def python(room_name):
+    print("my_session is: ",   my_session)
     print("python: "+ room_name)
     room = get_room_by_name(room_name)
     roomcpy = room.copy()
     roomcpy["solutions"] = {}
     return render_template('skulpt.html', data=roomcpy)
 
+
+@app.route('/leaderboarddata/<room_name>')
+def leaderboarddata(room_name):
+    room = get_room_by_name(room_name)
+    stats = room["analytics"]
+    stats['room'] = room_name
+    #print(stats);
+    return jsonify(stats)
+
+@app.route('/leaderboard/<room_name>')
+def leaderboard(room_name):
+    room = get_room_by_name(room_name)
+    stats = room["analytics"]
+    stats['room'] = room_name
+    return render_template('leaderboard.html', data=stats)
 
 @app.route('/')
 def index():
@@ -54,7 +79,7 @@ def index():
 @socketio.on('my_event', namespace='/test')
 def test_message(message):
     my_session['receive_count'] = my_session.get('receive_count', 0) + 1
-    print("Session: ", my_session)
+    print("my_session: ", my_session)
     print("Message: ", message)
     emit('my_response',
          {'data': message['data'], 'count': my_session['receive_count']})
@@ -117,12 +142,13 @@ def join(message):
 
     try:
         room_list = my_session["rooms"]
-    except:
+    except KeyError:
+        print("excepted")
         my_session["rooms"] = {}
         room_list = my_session["rooms"]
 
     questions=["what is 2+2", "print 1-5 in a list", "print a-z as keys and their corresponding ascii values as values in a dictionary"]
-    solutions = [4, [1, 2, 3, 4, 5], sol2()]
+    solutions = ['','','']
     solutions = [str(x) for x in solutions]
     questions_struct={}
     for x in range(len(questions)):
@@ -140,14 +166,15 @@ def join(message):
     curr_room =  room_list[message["room"]]
     if (message["username"] in curr_room["users"]) :
 
-        return; # username already exists in the room!
+        return # username already exists in the room!
 
     curr_room["users"].append(message["username"])
-
+    curr_room["current_user"] = message["username"]
     print(my_session)
-    print(' '.join(rooms()))
+    print(rooms())
 
-    emit('redirect', {'url': url_for('python', room_name=message["room"])}, room=message['room'])
+    emit('redirect', {'url': url_for('python', room_name=message['room'])}, room=message['room'])
+    #return redirect(url_for('python', room_name=message["room"]))
 
     #emit('my_response',
     #     {'data': '{0} has joined room: {1} says: {2}'.format(message["username"], message["room"], curr_room["welcome"]),
@@ -174,15 +201,27 @@ def close(message):
     close_room(message['room'])
 
 
+@socketio.on('send_to_leaderboard', namespace='/test')
+def send_to_leaderboard(message):
+
+    room_name=message['room']
+
+    emit('redirect', {'url': url_for('leaderboard', room_name=message['room'])})
+
+
 @socketio.on('verify_answer', namespace='/test')
 def verify_answer(message):
+
     my_session['receive_count'] = my_session.get('receive_count', 0) + 1
     room_name = message["room"]
     answer = message["answer"]
     question_index = int(message["question_index"])
     curr_room = get_room_by_name(room_name)
+    curr_user = message["curr_user"]
     print(room_name)
     print(curr_room["solutions"][question_index])
+
+    print(rooms())
 
     if answer == curr_room["solutions"][question_index]:
         print('answer in sols')
@@ -193,13 +232,25 @@ def verify_answer(message):
             curr_room["analytics"] = {}
             stats = curr_room["analytics"]
 
+
+        try:
+            user_stats = stats[curr_user]
+        except:
+            print('setting stats to 0');
+            stats[curr_user] = 0;
+            user_stats = stats[curr_user]
+
+        stats[curr_user] = stats[curr_user]+1
+
+        print(curr_user)
+        print(stats[curr_user])
         emit('my_response',
-             {'verify': True}, room=room_name)
+             {'verify': True, 'index' : question_index})
         return
 
     print('answer not in sols')
     emit('my_response',
-         {'verify': False}, room=room_name)
+         {'verify': False, 'index' : question_index})
 
 
 
@@ -208,7 +259,7 @@ def send_room_message(message):
     print(message)
     my_session['receive_count'] = my_session.get('receive_count', 0) + 1
 
-    print("Session: ", my_session)
+    print("my_session: ", my_session)
     print("Message: ", message)
 
     emit('my_response',
