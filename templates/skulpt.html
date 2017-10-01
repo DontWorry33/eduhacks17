@@ -11,10 +11,12 @@
 <script type="text/javascript"> 
 // output functions are configurable.  This one just appends some text
 // to a pre element.
-function outf(text) { 
-    var mypre = document.getElementById("output"); 
+function outf(text) {
+    console.log("text in outf: "+text)
+    var mypre = document.getElementById("hidden-output");
     mypre.innerHTML = mypre.innerHTML + text; 
-} 
+}
+
 function builtinRead(x) {
     if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
             throw "File not found: '" + x + "'";
@@ -26,11 +28,17 @@ function builtinRead(x) {
 // get a reference to your pre element for output
 // configure the output function
 // call Sk.importMainWithBody()
-function runit() { 
-   var prog = document.getElementById("yourcode").value; 
-   var mypre = document.getElementById("output"); 
-   mypre.innerHTML = ''; 
-   Sk.pre = "output";
+function runit(ind) {
+   console.log(ind)
+   ind = parseInt(ind)
+   var prog = document.getElementById("yourcode"+ind).value;
+   var mypre = document.getElementById("hidden-output");
+   console.log(prog);
+   console.log(mypre);
+   console.log({{data.solutions[ind] | safe}})
+   console.log({{data.questions | safe}})
+   mypre.innerHTML = '';
+   Sk.pre = "output"+ind;
    Sk.configure({output:outf, read:builtinRead}); 
    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
    var myPromise = Sk.misceval.asyncToPromise(function() {
@@ -42,23 +50,43 @@ function runit() {
        function(err) {
        console.log(err.toString());
    });
-} 
+
+   var outputVal = mypre.innerHTML
+   document.getElementById("output"+ind).innerHTML = outputVal
+   //outputVal = outputVal.replace(/\s/g, '')
+   console.log(typeof(outputVal))
+   console.log(typeof("{{data.solutions[ind] | safe}}"))
+   console.log("output sol: " + outputVal.replace(/\s/g, ''))
+   console.log("real sol: " + "{{data.solutions[ind] | safe}}".replace(/\s/g, ''))
+   if (outputVal.replace(/\s/g, '') == "{{data.solutions[ind]}}".replace(/\s/g, '')) {
+    alert("DUDE!");
+   }
+   //mypre.innerHTML = mypre.innerHTML + "<br> {{data.solution}}"
+
+}
+
+function showsol() {
+    $('#expected_sol').text({{data.solution}})
+}
 </script> 
 
-<h3>"{data.welcome}}</h3>
-<form> 
-<textarea id="yourcode" cols="40" rows="10">import turtle
+<h3>{{data.welcome}}</h3>
+{% for x in data.questions %}
+    <h4>{{data.questions[x]}}</h4>
+    <textarea id="yourcode{{x}}" cols="40" rows="10"></textarea>
+    <br />
+<button type="button" onclick="runit({{x}})">Run</button>
+    <button type="button" onclick="showsol()">Sol</button>
+<pre id="output{{x}}" ></pre>
+{% endfor %}
 
-t = turtle.Turtle()
-t.forward(100)
 
-print "Hello World"
-</textarea><br /> 
-<button type="button" onclick="runit()">Run</button> 
-</form> 
-<pre id="output" ></pre> 
+
+<div id="expected_sol"></div>
 <!-- If you want turtle graphics include a canvas -->
 <div id="mycanvas"></div> 
+
+<div id="hidden-output" style="display: none;"> </div>
 
 </body> 
 
