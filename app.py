@@ -220,9 +220,12 @@ def verify_answer(message):
     curr_room = get_room_by_name(room_name)
     curr_user = message["curr_user"]
     print(room_name)
+    answer = answer.lower()
+    answer = "".join(answer.split())
+    curr_room["solutions"][question_index] = curr_room["solutions"][question_index].lower()
+    curr_room["solutions"][question_index] = "".join("".join(curr_room["solutions"][question_index].split()))
     print(curr_room["solutions"][question_index])
-
-    print(rooms())
+    print(answer)
 
     if answer == curr_room["solutions"][question_index]:
         print('answer in sols')
