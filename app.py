@@ -165,6 +165,7 @@ def join(message):
     try:
         curr_room = room_list[message["room"]]
     except:
+        emit('room_error')
         return
 
     if (message["username"] in curr_room["users"]):
