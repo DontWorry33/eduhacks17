@@ -65,9 +65,42 @@ def test_broadcast_message(message):
          broadcast=True)
 
 
-@socketio.on('create', namespace='/test')
+@socketio.on('create_room', namespace='/test')
 def create_room(message):
+
+    try:
+        room_list = my_session["rooms"]
+    except:
+        my_session["rooms"] = {}
+        room_list = my_session["rooms"]
+
+    if message["room"] in room_list:
+        return # room already exists!
+
+    questions = message["questions"]
+    solutions = message["solutions"]
+
+    if len(questions) != len(solutions):
+        print("length of q does not match length of s")
+        return; # no solution or question???
+
+    room_list[message["room"]] = {"users": [], "questions": {0}, "solutions": {1}, "title": "{2}".format(questions, solutions, message["title"])}
     join_room(message)
+
+
+def sol():
+    ans = []
+    for x in range(1,100):
+        if x%2==1:
+            ans.append(x)
+
+    return ans
+
+def sol2():
+    ans = {}
+    for x in range(ord('a'), ord('z')+1):
+        ans[chr(x)] = x
+    return ans
 
 @socketio.on('join', namespace='/test')
 def join(message):
@@ -81,10 +114,19 @@ def join(message):
         my_session["rooms"] = {}
         room_list = my_session["rooms"]
 
+    questions=["what is 2+2", "print 1-5 in a list", "print a-z as keys and their corresponding ascii values as values in a dictionary"]
+    solutions = [4, [1, 2, 3, 4, 5], sol2()]
+    questions_struct={}
+    solutions_struct={}
+    for x in range(len(questions)):
+        questions_struct[x] = questions[x]
+        solutions_struct[x] = solutions[x]
+    #print(questions_struct)
+
     # create a new room with initial parameters?
     if message["room"] not in room_list:
-        room_list[message["room"]] = {"users" : [], "solution": "[1,2,3,4,5]", "welcome": "welcome to excerise 1! Your output should be the following: [1,2,3,4,5]"}
-
+        room_list[message["room"]] = {"users": [], "questions": questions_struct, "solutions": solutions_struct,
+                                      "title": "RANDOM QUESTIONS!!!"}
 
     # if (message["room"] not in room_list):
     #     room_list[message["room"]] = {}
