@@ -17,9 +17,10 @@ from flask_cors import CORS
 app = Flask(__name__)
 socketio = SocketIO(app)
 CORS(app)
-
+my_session = {}
 
 #app.config.from_object('settings')
+
 
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -31,10 +32,14 @@ if SECRET_KEY == None:
 app.config['SECRET_KEY'] = SECRET_KEY
 
 
-@app.route('/python/<room>')
-def python(room):
-    print("python: ", room)
-    return render_template('skulpt.html', data=room)
+def get_room_by_name(room_name):
+    rooms = my_session["rooms"]
+    return rooms[room_name]
+
+@app.route('/python/<room_name>')
+def python(room_name):
+    print("python: ", room_name)
+    return render_template('skulpt.html', data=get_room_by_name(room_name))
 
 
 @app.route('/')
@@ -45,18 +50,18 @@ def index():
 # region socketio stuff
 @socketio.on('my_event', namespace='/test')
 def test_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    print("Session: ", session)
+    my_session['receive_count'] = my_session.get('receive_count', 0) + 1
+    print("Session: ", my_session)
     print("Message: ", message)
     emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']})
+         {'data': message['data'], 'count': my_session['receive_count']})
 
 
 @socketio.on('my_broadcast_event', namespace='/test')
 def test_broadcast_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
+    my_session['receive_count'] = my_session.get('receive_count', 0) + 1
     emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']},
+         {'data': message['data'], 'count': my_session['receive_count']},
          broadcast=True)
 
 
@@ -68,13 +73,13 @@ def create_room(message):
 def join(message):
     print (message)
     join_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
+    my_session['receive_count'] = my_session.get('receive_count', 0) + 1
 
     try:
-        room_list = session["rooms"]
+        room_list = my_session["rooms"]
     except:
-        session["rooms"] = {}
-        room_list = session["rooms"]
+        my_session["rooms"] = {}
+        room_list = my_session["rooms"]
 
     # create a new room with initial parameters?
     if message["room"] not in room_list:
@@ -91,30 +96,29 @@ def join(message):
 
     curr_room["users"].append(message["username"])
 
+    print(my_session)
 
-    print(session)
-
-    emit('redirect', {'url': url_for('python', room=curr_room)})
+    emit('redirect', {'url': url_for('python', room_name=message["room"])})
 
     #emit('my_response',
     #     {'data': '{0} has joined room: {1} says: {2}'.format(message["username"], message["room"], curr_room["welcome"]),
-    #      'count': session['receive_count']})
+    #      'count': my_session['receive_count']})
 
 
 @socketio.on('leave', namespace='/test')
 def leave(message):
     leave_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
+    my_session['receive_count'] = my_session.get('receive_count', 0) + 1
     emit('my_response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
-          'count': session['receive_count']})
+          'count': my_session['receive_count']})
 
 
 @socketio.on('close_room', namespace='/test')
 def close(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
+    my_session['receive_count'] = my_session.get('receive_count', 0) + 1
     emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
-                         'count': session['receive_count']},
+                         'count': my_session['receive_count']},
          room=message['room'])
     close_room(message['room'])
 
@@ -122,21 +126,21 @@ def close(message):
 @socketio.on('my_room_event', namespace='/test')
 def send_room_message(message):
     print(message)
-    session['receive_count'] = session.get('receive_count', 0) + 1
+    my_session['receive_count'] = my_session.get('receive_count', 0) + 1
 
-    print("Session: ", session)
+    print("Session: ", my_session)
     print("Message: ", message)
 
     emit('my_response',
-         {'data': "({0}) {1} says: {2}".format(message["room"], message["username"], message['data']), 'count': session['receive_count']},
+         {'data': "({0}) {1} says: {2}".format(message["room"], message["username"], message['data']), 'count': my_session['receive_count']},
          room=message['room'])
 
 
 @socketio.on('disconnect_request', namespace='/test')
 def disconnect_request():
-    session['receive_count'] = session.get('receive_count', 0) + 1
+    my_session['receive_count'] = my_session.get('receive_count', 0) + 1
     emit('my_response',
-         {'data': 'Disconnected!', 'count': session['receive_count']})
+         {'data': 'Disconnected!', 'count': my_session['receive_count']})
     disconnect()
 
 @socketio.on('my_ping', namespace='/test')
@@ -145,5 +149,4 @@ def ping_pong():
 # endregion
 
 if __name__ == '__main__':
-
     socketio.run(app)
