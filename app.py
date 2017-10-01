@@ -52,7 +52,7 @@ def python(room_name):
     room = get_room_by_name(room_name)
     roomcpy = room.copy()
     roomcpy["solutions"] = {}
-    return render_template('skulpt.html', data=roomcpy)
+    return render_template('joinroom.html', data=roomcpy)
 
 
 @app.route('/leaderboarddata/<room_name>')
