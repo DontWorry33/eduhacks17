@@ -49,8 +49,6 @@ $(document).ready(function() {
 
     console.log(socket);
 
-
-
     $('form#join').submit(function(event) {
         var username = document.getElementById('username').value;
         var roomname = document.getElementById('roomname').value;
@@ -59,11 +57,5 @@ $(document).ready(function() {
         socket.emit('join', { room: roomname, username: username });
         return false;
     })
-
-
-
-
-
-
 
 })

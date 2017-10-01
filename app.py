@@ -72,7 +72,7 @@ def leaderboard(room_name):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('splash.html')
 
 
 # region socketio stuff

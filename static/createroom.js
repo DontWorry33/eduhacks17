@@ -61,6 +61,7 @@ $(document).ready(function() {
         console.log(Questions);
         console.log(Answers);
         socket.emit('create_room', { room: localStorage.getItem("roomNameStorage"), title: $('#room_title').val(), questions: Questions, solutions: Answers });
+        window.location.href="/";
         return false;
     })
 
