@@ -62,7 +62,11 @@ var demo = new Vue({
             { name: 'Chuck Norris', completed: 3, passed: true, time: '1:00' },
             { name: 'Bruce Lee', completed: 2, passed: true, time: '1:23' },
             { name: 'Jackie Chan', completed: 2, passed: true, time: '1:34' },
-            { name: 'Jet Li', completed: 1, passed: false, time: '2:34' }
+            { name: 'Jet Li', completed: 1, passed: false, time: '2:34' },
+            { name: 'Floyd Mayweather', completed: 0, passed: false, time: '5:00' },
+            { name: 'Scooby-doo', completed: 0, passed: false, time: '4:23' },
+            { name: 'The gang', completed: 1, passed: false, time: '4:14' },
+            { name: 'Jason Chan', completed: 0, passed: false, time: '20:34' }
         ]
     }
 })
