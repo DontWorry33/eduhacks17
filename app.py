@@ -34,7 +34,6 @@ if SECRET_KEY == None:
 
 
 app.config['SECRET_KEY'] = "12345"
-app.config['SERVER_NAME'] = "127.0.0.1:5000"
 
 
 def get_room_by_name(room_name):
