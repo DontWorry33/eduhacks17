@@ -11,9 +11,3 @@ var roomname = new Vue({
         message: 'Room Name:'
     }
 })
-var app = new Vue({
-    el: '#app',
-    data: {
-        message: 'Hello Vue!'
-    }
-})
