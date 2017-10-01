@@ -110,8 +110,9 @@
           </div>
           <h3>CREATE A ROOM</h3>
           <div id="room-code">
-            <p>{{ message }}</p>
-            <input v-model="message">
+            <p>Room Name:</p>
+            <input v-model="message" placeholder="Room Name">
+						<input type="submit" value="Create Room">
           </div>
         </div>
       </div>
@@ -124,9 +125,10 @@
           <h3>JOIN A ROOM</h3>
           <div id="join-room">
             <p>Username:</p>
-            <input v-model="username"><br>
+            <input v-model="username" placeholder="Enter Your Name"><br>
 						<p>Room name:</p>
-						<input v-model="roomname">
+						<input v-model="roomname" placeholder="Enter The Room Name"><br><br>
+						<input type="submit" value="Join Room">
           </div>
           <br>
         </div>

@@ -11,6 +11,9 @@
 
 	<!-- stylesheets css -->
 	<link rel="stylesheet" href="css/2083_steak_house/css/bootstrap.min.css">
+  <script src="lib/codemirror.js"></script>
+  <link rel="stylesheet" href="lib/codemirror.css">
+  <script src="mode/javascript/javascript.js"></script>
 
   	<link rel="stylesheet" href="css/2083_steak_house/css/magnific-popup.css">
 
@@ -28,6 +31,7 @@
   	<link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
   	<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/custom.css">
+
   <title>Join a Room</title>
 </head>
 
@@ -57,7 +61,7 @@
   <section id="about" class="parallax-section ">
     <div class="overlay"></div>
   	<div class="container">
-  		<div class="row " >
+  		<div class="row">
 
   			<div class="uncentered col-md-offset-2 col-md-8 col-sm-offset-1 ">
               <div id= "question" class="wow fadeInUp section-title uncentered" data-wow-delay="0.3s">
@@ -67,11 +71,15 @@
   					<form id="contact-form" method="post" action="#">
               <div id="codedata">
                 <p>Enter your code here</p><br>
-                <textarea v-model="code" class="input-lg"></textarea><br>
-                <button type="button">Run</button>
-                <button type="button">Submit</button>
-                <p>Output</p>
-                <textarea v-model="output" class="input-lg"></textarea><br>
+                <div style="border: solid 1px; overflow:hidden">
+                  <textarea v-model="code" class="input-lg" id="code_editor"></textarea><br>
+                </div><br>
+                <button type="button" style="font-size: 24px;">Run</button>
+                <div>
+                <br><br><p>Output</p>
+                <textarea v-model="output" class="input-lg"></textarea>
+                <button type="button" style="font-size: 24px; vertical-align: middle;">Submit</button>
+                <div>
               </div>
   					</form>
 
@@ -102,4 +110,9 @@
 
 <script src="css/2083_steak_house/js/custom.js"></script>
 <script type='text/javascript' src="joinroom.js"></script>
+<script>
+  var editor = CodeMirror.fromTextArea(document.getElementById('code_editor'), {
+    lineNumbers: true
+  });
+</script>
 </html>
