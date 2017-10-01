@@ -59,10 +59,10 @@ var demo = new Vue({
         searchQuery: '',
         gridColumns: ['name', 'completed', 'passed', 'time'],
         gridData: [
-            { name: 'Chuck Norris', completed: true, passed: true, time: '1:00' },
-            { name: 'Bruce Lee', completed: true, passed: true, time: '1:23' },
-            { name: 'Jackie Chan', completed: false, passed: false, time: '1:34' },
-            { name: 'Jet Li', completed: true, passed: true, time: '2:34' }
+            { name: 'Chuck Norris', completed: 3, passed: true, time: '1:00' },
+            { name: 'Bruce Lee', completed: 2, passed: true, time: '1:23' },
+            { name: 'Jackie Chan', completed: 2, passed: true, time: '1:34' },
+            { name: 'Jet Li', completed: 1, passed: false, time: '2:34' }
         ]
     }
 })
