@@ -26,6 +26,10 @@
                 socket.emit('my_event', {data: 'I\'m connected!'});
             });
 
+            socket.on('redirect', function (data) {
+                window.location = data.url;
+            });
+
             // Event handler for server sent data.
             // The callback function is invoked whenever the server emits data
             // to the client. The data is then displayed in the "Received"
@@ -82,7 +86,7 @@
                 return false;
             });
             $('form#send_room').submit(function(event) {
-                socket.emit('my_room_event', {room: $('#room_name').val(), data: $('#room_data').val()});
+                socket.emit('my_room_event', {room: $('#room_name').val(), data: $('#room_data').val(), username:$('#user_name').val()});
                 return false;
             });
             $('form#close').submit(function(event) {

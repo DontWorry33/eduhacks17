@@ -5,7 +5,7 @@ from flask import Response
 from flask import abort
 from flask import session
 from flask import render_template
-
+from flask import url_for
 
 import os
 
@@ -31,9 +31,10 @@ if SECRET_KEY == None:
 app.config['SECRET_KEY'] = SECRET_KEY
 
 
-@app.route('/python')
-def python():
-    return render_template('skulpt.html')
+@app.route('/python/<room>')
+def python(room):
+    print("python: ", room)
+    return render_template('skulpt.html', data=room)
 
 
 @app.route('/')
@@ -59,17 +60,45 @@ def test_broadcast_message(message):
          broadcast=True)
 
 
+@socketio.on('create', namespace='/test')
+def create_room(message):
+    join_room(message)
+
 @socketio.on('join', namespace='/test')
 def join(message):
+    print (message)
     join_room(message['room'])
     session['receive_count'] = session.get('receive_count', 0) + 1
-    session['user'] = message['username']
-    session['room'] = message['room']
-    print("Session: ", session)
-    print("Message: ", message)
-    emit('my_response',
-         {'data': 'In rooms: ' + ', '.join(rooms()),
-          'count': session['receive_count']})
+
+    try:
+        room_list = session["rooms"]
+    except:
+        session["rooms"] = {}
+        room_list = session["rooms"]
+
+    # create a new room with initial parameters?
+    if message["room"] not in room_list:
+        room_list[message["room"]] = {"users" : [], "solution": "[1,2,3,4,5]", "welcome": "welcome to excerise 1! Your output should be the following: [1,2,3,4,5]"}
+
+
+    # if (message["room"] not in room_list):
+    #     room_list[message["room"]] = {}
+
+    curr_room =  room_list[message["room"]]
+    if (message["username"] in curr_room["users"]) :
+
+        return; # username already exists in the room!
+
+    curr_room["users"].append(message["username"])
+
+
+    print(session)
+
+    emit('redirect', {'url': url_for('python', room=curr_room)})
+
+    #emit('my_response',
+    #     {'data': '{0} has joined room: {1} says: {2}'.format(message["username"], message["room"], curr_room["welcome"]),
+    #      'count': session['receive_count']})
 
 
 @socketio.on('leave', namespace='/test')
@@ -92,11 +121,14 @@ def close(message):
 
 @socketio.on('my_room_event', namespace='/test')
 def send_room_message(message):
+    print(message)
     session['receive_count'] = session.get('receive_count', 0) + 1
+
     print("Session: ", session)
     print("Message: ", message)
+
     emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']},
+         {'data': "({0}) {1} says: {2}".format(message["room"], message["username"], message['data']), 'count': session['receive_count']},
          room=message['room'])
 
 
