@@ -8,6 +8,6 @@ var codedata = new Vue({
 var question= new Vue({
   el: '#question',
   data: {
-    questionsupplied: 'Question supplied'
+    questionsupplied: 'Question supplied... '
   }
 })

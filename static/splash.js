@@ -8,7 +8,7 @@ var roomcode = new Vue({
 var joinroom = new Vue({
     el: '#join-room',
     data: {
-        username: 'Username:',
-        roomname: 'Room Name:'
+        username: 'Enter a username...',
+        roomname: 'Enter the room name you wish to join...'
     }
 })

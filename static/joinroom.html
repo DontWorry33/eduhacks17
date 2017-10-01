@@ -34,9 +34,9 @@
 <body>
 
   <!-- Navigation section -->
-  <div class="navbar navbar-default navbar-static-top" role="navigation">
-    <div class="container">
+  <div class=" gradient-overlay navbar navbar-default navbar-static-top" role="navigation">
 
+    <div class="container" >
       <div class="navbar-header">
         <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
           <span class="icon icon-bar"></span>
@@ -50,28 +50,28 @@
           <li><a href="#top" class="smoothScroll">room name here</a></li>
         </ul>
       </div>
-
     </div>
   </div>
+
   <!-- Question and Answer Section --->
-  <section id="contact" class="parallax-section">
+  <section id="about" class="parallax-section ">
     <div class="overlay"></div>
   	<div class="container">
-  		<div class="row">
+  		<div class="row " >
 
-  			<div id="uncentered" class="col-md-offset-2 col-md-8 col-sm-offset-1 ">
-              <div id= "uncentered" class="wow fadeInUp section-title" data-wow-delay="0.3s">
-                  <h2 >Question:</h2> <h4 id="question" v-model="question"> {{questionsupplied}}</h4>
+  			<div class="uncentered col-md-offset-2 col-md-8 col-sm-offset-1 ">
+              <div id= "question" class="wow fadeInUp section-title uncentered" data-wow-delay="0.3s">
+                  <h2 >Question:</h2> <textarea class= "input-lg" v-model='questionsupplied' readonly></textarea>
               </div>
   				<div class="contact-form wow fadeInUp" data-wow-delay="0.3s">
   					<form id="contact-form" method="post" action="#">
               <div id="codedata">
                 <p>Enter your code here</p><br>
-                <input v-model="code"><br>
+                <textarea v-model="code" class="input-lg"></textarea><br>
                 <button type="button">Run</button>
                 <button type="button">Submit</button>
                 <p>Output</p>
-                <input v-model="output"><br>
+                <textarea v-model="output" class="input-lg"></textarea><br>
               </div>
   					</form>
 
