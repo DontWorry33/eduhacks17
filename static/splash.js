@@ -1,6 +1,12 @@
-var app = new Vue({
-    el: '#app',
+var username= new Vue({
+    el: '#user-name',
     data: {
-        message: 'Hello Vue!'
+        message: 'Username:'
+    }
+})
+var roomname = new Vue({
+    el: '#room-name',
+    data: {
+        message: 'Room Name:'
     }
 })
