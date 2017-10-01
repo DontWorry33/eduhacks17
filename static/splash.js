@@ -1,3 +1,9 @@
+var roomcode = new Vue({
+    el: '#room-code',
+    data: {
+        message: 'Room Code:'
+    }
+})
 
 var username= new Vue({
     el: '#user-name',
