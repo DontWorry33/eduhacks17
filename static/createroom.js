@@ -16,10 +16,10 @@ $(document).ready(function() {
     // The callback function is invoked when a connection with the
     // server is established.
     socket.on('connect', function() {
-        socket.emit('my_event', {data: 'I\'m connected!'});
+        socket.emit('my_event', { data: 'I\'m connected!' });
     });
 
-    socket.on('redirect', function (data) {
+    socket.on('redirect', function(data) {
         window.location = data.url;
     });
 
@@ -34,34 +34,34 @@ $(document).ready(function() {
     console.log(socket);
 
 
-    var question_table  = new Vue({
-      el: "#question_table",
-      data: {
-        rows: [
-          {Question: "",Answer: ""},
-        ]
-      },
-      methods:{
-        addRow: function(){
-          this.rows.push({Question:"",Answer:""});
+    var question_table = new Vue({
+        el: "#question_table",
+        data: {
+            rows: [
+                { Question: "", Answer: "" },
+            ]
         },
-        removeRow: function(index){
-          this.rows.splice(index, 1);
+        methods: {
+            addRow: function() {
+                this.rows.push({ Question: "", Answer: "" });
+            },
+            removeRow: function(index) {
+                this.rows.splice(index, 1);
+            }
         }
-      }
     });
 
     $('form#create').submit(function(event) {
-      var Questions = [];
-      var Answers = [];
-      for(i=0; i< question_table.rows.length; i++){
-        Questions.push(JSON.stringify(question_table.rows[i].Question));
-        Answers.push(JSON.stringify(question_table.rows[i].Answer));
-      }
-      console.log(Questions);
-      console.log(Answers);
-      socket.emit('create_room', {room: $('#room_name').val(), title: $('#room_title').val(), questions: Questions, solutions: Answers});
-      return false;
+        var Questions = [];
+        var Answers = [];
+        for (i = 0; i < question_table.rows.length; i++) {
+            Questions.push(JSON.stringify(question_table.rows[i].Question));
+            Answers.push(JSON.stringify(question_table.rows[i].Answer));
+        }
+        console.log(Questions);
+        console.log(Answers);
+        socket.emit('create_room', { room: localStorage.getItem("roomNameStorage"), title: $('#room_title').val(), questions: Questions, solutions: Answers });
+        return false;
     })
 
 

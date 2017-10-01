@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,73 +33,78 @@
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/custom.css">
     <link rel="stylesheet" href="css/createroom.css">
-  </head>
-  <body>
+</head>
+
+<body>
 
     <!-- Navigation section -->
     <div class=" gradient-overlay navbar navbar-default navbar-static-top" role="navigation">
 
-      <div class="container" >
-        <div class="navbar-header">
-          <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon icon-bar"></span>
             <span class="icon icon-bar"></span>
             <span class="icon icon-bar"></span>
           </button>
-          <a href="#" class="navbar-brand">Learn2Hack</a>
+                <a href="#" class="navbar-brand">Learn2Hack</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#top" style="color: black;" class="smoothScroll">Create a Room</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#top" style="color: black;" class="smoothScroll">Create a Room</a></li>
-          </ul>
-        </div>
-      </div>
     </div>
 
-    <!-- Form Section --->
+    <!-- Form Section -->
     <section id="about" class="parallax-section ">
-    <div class="overlay"></div>
-    <div class="container">
-      <div class="row" >
-    <div id="main">
-      <form id="create" method="POST" action='#'>
-        <p>Room Name:</p>
-        <p id=actualRoomName>room_name</p>
-        <script>
-        window.onload = localStorage.getItem("roomNameStorage");
-        document.getElementById('actualRoomName').innerHTML = localStorage.getItem("roomNameStorage");
-        </script>
-        <p>Room Title:</p>
-        <input class="form-control" type="text" id="room_title"><br>
-        <div id="question_table" class="table-responsive">
-          <table class="question_table table-striped table-bordered" width="100%" align="center">
-            <thead>
-              <tr>
-                <td><p align="center">Question</p></td>
-                <td><p align="center">Answer</p></td>
-                <td></td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, index) in rows">
-                <td><textarea class="QnA form-control" id="question" type="text" v-model="row.Question"></textarea></td>
-                <td><textarea class="QnA form-control" id="answer" type="text" v-model="row.Answer"></textarea></td>
-                <td align="center"><a @click="removeRow(index)">Remove</a></td>
-              </tr>
-            </tbody>
-          </table>
-          <div>
-            <button type="button" class="button btn-primary" @click="addRow">Add question</button>
-          </div>
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div id="main">
+                    <form id="create" method="POST" action='#'>
+                        <p>Room Name:</p>
+                        <p id=actualRoomName>room_name</p>
+                        <script>
+                            window.onload = localStorage.getItem("roomNameStorage");
+                            document.getElementById('actualRoomName').innerHTML = localStorage.getItem("roomNameStorage");
+                        </script>
+                        <p>Room Title:</p>
+                        <input class="form-control" type="text" id="room_title"><br>
+                        <div id="question_table" class="table-responsive">
+                            <table class="question_table table-striped table-bordered" width="100%" align="center">
+                                <thead>
+                                    <tr>
+                                        <td>
+                                            <p align="center">Question</p>
+                                        </td>
+                                        <td>
+                                            <p align="center">Answer</p>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(row, index) in rows">
+                                        <td><textarea class="QnA form-control" id="question" type="text" v-model="row.Question"></textarea></td>
+                                        <td><textarea class="QnA form-control" id="answer" type="text" v-model="row.Answer"></textarea></td>
+                                        <td align="center"><a @click="removeRow(index)">Remove</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div>
+                                <button type="button" class="button btn-primary" @click="addRow">Add question</button>
+                            </div>
+                        </div>
+                        <br>
+                        <div align="center">
+                            <input type="submit" value="Create Room">
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <br>
-        <div align="center">
-          <input type="submit" value="Create Room">
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
     </section>
 
 
@@ -122,7 +128,7 @@
     <script src="css/2083_steak_house/js/wow.min.js"></script>
 
     <script src="css/2083_steak_house/js/custom.js"></script>
-  </body>
+</body>
 
 
 </html>

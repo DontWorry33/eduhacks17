@@ -95,7 +95,7 @@ def test_broadcast_message(message):
 
 @socketio.on('create_room', namespace='/test')
 def create_room(message):
-
+    print(message)
     try:
         room_list = my_session["rooms"]
     except:
@@ -147,31 +147,32 @@ def join(message):
         my_session["rooms"] = {}
         room_list = my_session["rooms"]
 
-    questions=["what is 2+2", "print 1-5 in a list", "print a-z as keys and their corresponding ascii values as values in a dictionary"]
-    solutions = ['','','']
-    solutions = [str(x) for x in solutions]
-    questions_struct={}
-    for x in range(len(questions)):
-        questions_struct[x] = str(questions[x])
-    #print(questions_struct)
+    # questions=["what is 2+2", "print 1-5 in a list", "print a-z as keys and their corresponding ascii values as values in a dictionary"]
+    # solutions = ['','','']
+    # solutions = [str(x) for x in solutions]
+    # questions_struct={}
+    # for x in range(len(questions)):
+    #     questions_struct[x] = str(questions[x])
+    # #print(questions_struct)
 
     # create a new room with initial parameters?
-    if message["room"] not in room_list:
-        room_list[message["room"]] = {"name": message["room"], "users": [], "questions": questions_struct, "solutions": solutions,
-                                      "title": "RANDOM QUESTIONS!!!"}
+    # if message["room"] not in room_list:
+    #     room_list[message["room"]] = {"name": message["room"], "users": [], "questions": questions_struct, "solutions": solutions,
+    #                                   "title": "RANDOM QUESTIONS!!!"}
 
     # if (message["room"] not in room_list):
     #     room_list[message["room"]] = {}
-
-    curr_room =  room_list[message["room"]]
-    if (message["username"] in curr_room["users"]) :
-
+    try:
+        curr_room = room_list[message["room"]]
+    except:
+        return
+    
+    if (message["username"] in curr_room["users"]):
         return # username already exists in the room!
 
     curr_room["users"].append(message["username"])
     curr_room["current_user"] = message["username"]
     print(my_session)
-    print(rooms())
 
     emit('redirect', {'url': url_for('python', room_name=message['room'])}, room=message['room'])
     #return redirect(url_for('python', room_name=message["room"]))
