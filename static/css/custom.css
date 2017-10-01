@@ -18,3 +18,5 @@
 #codedata > .CodeMirror {
   border-width: 1px;
 }
+.top-buffer { margin-top:20px; }
+.tab { margin-left: 20px; }
