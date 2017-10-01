@@ -34,8 +34,8 @@ function runit(ind) {
    var prog = document.getElementById("yourcode"+ind).value;
    var mypre = document.getElementById("hidden-output");
    console.log(prog);
-   console.log(mypre);
-   console.log({{data.solutions[ind] | safe}})
+   console.log({{ind}});
+   console.log({{data.solutions | safe}})
    console.log({{data.questions | safe}})
    mypre.innerHTML = '';
    Sk.pre = "output"+ind;
@@ -55,10 +55,11 @@ function runit(ind) {
    document.getElementById("output"+ind).innerHTML = outputVal
    //outputVal = outputVal.replace(/\s/g, '')
    console.log(typeof(outputVal))
-   console.log(typeof("{{data.solutions[ind] | safe}}"))
+   solutionForQuestion = {{data.solutions | safe}}[ind]
+   console.log(typeof(String(solutionForQuestion)))
    console.log("output sol: " + outputVal.replace(/\s/g, ''))
-   console.log("real sol: " + "{{data.solutions[ind] | safe}}".replace(/\s/g, ''))
-   if (outputVal.replace(/\s/g, '') == "{{data.solutions[ind]}}".replace(/\s/g, '')) {
+   console.log("real sol: " + String(solutionForQuestion).replace(/\s/g, ''))
+   if (outputVal.replace(/\s/g, '') == String(solutionForQuestion).replace(/\s/g, '')) {
     alert("DUDE!");
    }
    //mypre.innerHTML = mypre.innerHTML + "<br> {{data.solution}}"

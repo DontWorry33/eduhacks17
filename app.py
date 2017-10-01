@@ -119,8 +119,8 @@ def join(message):
     questions_struct={}
     solutions_struct={}
     for x in range(len(questions)):
-        questions_struct[x] = questions[x]
-        solutions_struct[x] = solutions[x]
+        questions_struct[x] = str(questions[x])
+        solutions_struct[x] = str(solutions[x])
     #print(questions_struct)
 
     # create a new room with initial parameters?
