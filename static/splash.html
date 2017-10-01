@@ -121,15 +121,13 @@
             <span><i class="fa fa-coffee"></i></span>
           </div>
           <h3>JOIN A ROOM</h3>
-          <div id="user-name">
-            <p>{{ message }}</p>
-            <input v-model="message">
+          <div id="join-room">
+            <p>{{ username }}</p>
+            <input v-model="username">
+						<p>{{ roomname}}
+						<input v-model="roomname">
           </div>
           <br>
-          <div id="room-code">
-            <p>{{ message }}</p>
-            <input v-model="message">
-          </div>
         </div>
       </div>
 
