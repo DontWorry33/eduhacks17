@@ -59,35 +59,37 @@
 
   <!-- Question and Answer Section --->
   <section id="about" class="parallax-section ">
-    <div class="overlay"></div>
   	<div class="container">
   		<div class="row">
-
-  			<div class="uncentered col-md-offset-2 col-md-8 col-sm-offset-1 ">
-              <div id= "question" class="wow fadeInUp section-title uncentered" data-wow-delay="0.3s">
-                  <h2 >Question:</h2> <textarea class= "input-lg" v-model='questionsupplied' readonly></textarea>
-              </div>
+          <p style="font-size:30px;"><strong>Question:</strong></p> <textarea class= "input-lg" v-model='questionsupplied' readonly></textarea>
   				<div class="contact-form wow fadeInUp" data-wow-delay="0.3s">
+            <br><br>
   					<form id="contact-form" method="post" action="#">
               <div id="codedata">
-                <p>Enter your code here</p><br>
-                <div style="border: solid 1px; overflow:hidden">
+                <div class="col-md-8">
+                  <p>Enter your code here</p><br>
+                </div>
+                <div class="col-md-4">
+                  <p>Output</p><br>
+                </div>
+                <div class="row">
+                <div class="col-md-8" style="border: solid 1px; overflow:hidden">
                   <textarea v-model="code" class="input-lg" id="code_editor"></textarea><br>
-                </div><br>
-                <button type="button" style="font-size: 24px;">Run</button>
-                <div>
-                <br><br><p>Output</p>
-                <textarea v-model="output" class="input-lg"></textarea>
-                <button type="button" style="font-size: 24px; vertical-align: middle;">Submit</button>
-                <div>
+                </div>
+                <div class="col-md-4">
+                  <div id="output"></div>
+                  <textarea v-model="output" class="input-lg" readonly style="display:none"></textarea>
+                </div>
+              </div>
+                <button type="button" style="font-size: 18px;">Run</button>
+                <button type="button" style="font-size: 18px;">Submit</button>
+
+
               </div>
   					</form>
-
   				</div>
   			</div>
-
   		</div>
-  	</div>
   </section>
 </body>
 <script src="css/2083_steak_house/js/jquery.js"></script>
