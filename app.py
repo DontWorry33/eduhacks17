@@ -100,8 +100,9 @@ def create_room(message):
     except:
         my_session["rooms"] = {}
         room_list = my_session["rooms"]
-
-    if message["room"] in room_list:
+    if message["room"] in room_list.keys():
+        print("room exists error")
+        emit('room_error')
         return # room already exists!
 
     questions = message["questions"]
@@ -164,7 +165,6 @@ def join(message):
     try:
         curr_room = room_list[message["room"]]
     except:
-        emit('room_error')
         return
 
     if (message["username"] in curr_room["users"]):

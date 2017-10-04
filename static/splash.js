@@ -39,9 +39,6 @@ $(document).ready(function() {
         window.location = data.url;
     });
 
-    socket.on('room_error', function(){
-        alert("Room Name Invalid!")
-    });
 
     // // Event handler for server sent data.
     // // The callback function is invoked whenever the server emits data
