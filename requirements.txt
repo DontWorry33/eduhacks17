@@ -9,3 +9,7 @@ python-engineio==1.7.0
 python-socketio==1.8.0
 six==1.11.0
 Werkzeug==0.12.2
+Flask-WTF==0.9.5
+greenlet==0.4.2
+WTForms==1.0.5
+

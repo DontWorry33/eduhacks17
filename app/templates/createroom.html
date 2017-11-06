@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="css/2083_steak_house/css/animate.min.css">
     <link rel="stylesheet" href="css/2083_steak_house/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="css/2083_steak_house/css/nivo-lightbox.css">
+    <link rel="stylesend_roomsheet" href="css/2083_steak_house/css/nivo-lightbox.css">
     <link rel="stylesheet" href="css/2083_steak_house/css/nivo_themes/default/default.css">
 
     <link rel="stylesheet" href="css/2083_steak_house/css/hover-min.css">
@@ -64,45 +64,14 @@
         <div class="container">
             <div class="row">
                 <div id="main">
-                    <form id="create" method="POST" action='#'>
-                        <p>Room Name:</p>
-                        <p id=actualRoomName>room_name</p>
-                        <script>
-                            window.onload = localStorage.getItem("roomNameStorage");
-                            document.getElementById('actualRoomName').innerHTML = localStorage.getItem("roomNameStorage");
-                        </script>
-                        <p>Room Description:</p>
-                        <input class="form-control" type="text" id="room_title"><br>
-                        <div id="question_table" class="table-responsive">
-                            <table class="question_table table-striped table-bordered" width="100%" align="center">
-                                <thead>
-                                    <tr>
-                                        <td>
-                                            <p align="center">Question</p>
-                                        </td>
-                                        <td>
-                                            <p align="center">Answer</p>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(row, index) in rows">
-                                        <td><textarea class="QnA form-control" id="question" type="text" v-model="row.Question"></textarea></td>
-                                        <td><textarea class="QnA form-control" id="answer" type="text" v-model="row.Answer"></textarea></td>
-                                        <td align="center"><a @click="removeRow(index)">Remove</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div>
-                                <button type="button" class="button btn-primary" @click="addRow">Add question</button>
-                            </div>
-                        </div>
-                        <br>
-                        <div align="center">
-                            <input type="submit" value="Create Room" href="/">
-                        </div>
+
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        {{ form.name.label }}: {{ form.name() }} {% for error in form.name.errors %}{{ error }}{% endfor %}<br>
+                        {{ form.room.label }}: {{ form.room() }} {% for error in form.room.errors %}{{ error }}{% endfor %}<br>
+                        {{ form.submit() }}
                     </form>
+
                 </div>
             </div>
         </div>

@@ -38,10 +38,44 @@
     <script src="http://www.skulpt.org/static/skulpt-stdlib.js" type="text/javascript"></script>
     <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script>
+            var socket;
+            $(document).ready(function(){
+                socket = io.connect('http://' + document.domain + ':' + location.port + '/room');
 
+                socket.on('connect', function() {
+                    socket.emit('joined', {});
+                });
+                socket.on('status', function(data) {
+                    $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
+                    $('#chat').scrollTop($('#chat')[0].scrollHeight);
+                });
+                socket.on('message', function(data) {
+                    $('#chat').val($('#chat').val() + data.msg + '\n');
+                    $('#chat').scrollTop($('#chat')[0].scrollHeight);
+                });
+                $('#text').keypress(function(e) {
+                    var code = e.keyCode || e.which;
+                    if (code == 13) {
+                        text = $('#text').val();
+                        $('#text').val('');
+                        socket.emit('text', {msg: text});
+                    }
+                });
+            });
+            function leave_room() {
+                socket.emit('left', {}, function() {
+                    socket.disconnect();
+
+                    // go back to the login page
+                    window.location.href = "{{ url_for('main.index') }}";
+                });
+            }
+    </script>
 </head>
 
 <body>
+    <h1>Room: {{ room }}</h1>
 
     <script type="text/javascript">
         // output functions are configurable.  This one just appends some text
@@ -83,6 +117,10 @@
         }
     </script>
 
+
+     <textarea id="chat" cols="80" rows="20"></textarea><br><br>
+        <input id="text" size="80" placeholder="Enter your message here"><br><br>
+
     <!-- Navigation section -->
     <div class=" gradient-overlay navbar navbar-default navbar-static-top" role="navigation">
 
@@ -97,7 +135,6 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#top" class="smoothScroll">{{data.name}}</a></li>
                 </ul>
             </div>
         </div>
@@ -106,11 +143,9 @@
     <!-- Question and Answer Section -->
     <section id="about" class="parallax-section ">
         <div class="container">
-            {% for x in data.questions %}
             <div class="row top-buffer">
                 <p style="font-size:30px;"><strong>Question:</strong></p>
-                <!-- <textarea class="input-lg" v-model='questionsupplied' readonly></textarea> -->
-                <p class="tab">{{ data.questions[x] }}</p>
+                {{question}}
                 <div class="contact-form wow fadeInUp" data-wow-delay="0.3s">
                     <br><br>
                     <form id="contact-form" method="post" action="#">
@@ -122,25 +157,18 @@
                                 <p>Output</p><br>
                             </div>
                             <div class="row">
-                                <div class="col-md-8" style="border: solid 1px; overflow:hidden">
-                                    <textarea v-model="code" class="input-lg" id="code_editor{{x}}"></textarea><br>
-                                    <button type="button" style="font-size: 18px; float:right;" onclick="runit({{x}})">Run</button>
-                                </div>
-                                <div class="col-md-4">
-                                    <pre id="editor_output{{x}}"></pre>
-                                </div>
                             </div>
 
                         </div>
                     </form>
                 </div>
             </div>
-            {% endfor %}
 
             <form id="submitanswer" method="POST" action='#'>
                 <br>
                 <input type="submit" style="font-size: 18px;" value="Submit"></input>
             </form>
+            <a href="#" onclick="leave_room();">Leave this room</a>
         </div>
     </section>
     <div id="hidden-output" style="display:none;"></div>
@@ -166,103 +194,9 @@
 
 <script src="/static/css/2083_steak_house/js/custom.js"></script>
 <script type='text/javascript' src="/static/joinroom.js"></script>
-<script>
-    var editors = {}
-    {% for x in data.questions %}
-    var editor = CodeMirror.fromTextArea(document.getElementById('code_editor{{x}}'), {
-        lineNumbers: true
-    });
-
-    editors[parseInt({{x}})] = editor
-    {% endfor %}
-</script>
-
-<script>
-    $(document).ready(function() {
-
-    var complete=[]
-    {% for x in data.questions %}
-    complete.push(false)
-    {% endfor %}
-    // Use a "/test" namespace.
-    // An application can open a connection on multiple namespaces, and
-    // Socket.IO will multiplex all those connections on a single
-    // physical channel. If you don't care about multiple channels, you
-    // can set the namespace to an empty string.
-    namespace = '/test';
-
-    // Connect to the Socket.IO server.
-    // The connection URL has the following format:
-    //     http[s]://<domain>:<port>[/<namespace>]
-    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-    console.log(location.protocol + '//' + document.domain + ':' + location.port + namespace)
-
-    // Event handler for new connections.
-    // The callback function is invoked when a connection with the
-    // server is established.
-    socket.on('connect', function() {
-        socket.emit('my_event', { data: 'I\'m connected!' });
-    });
-
-    socket.on('redirect', function(data) {
-        window.location = data.url;
-    });
-
-    // // Event handler for server sent data.
-    // // The callback function is invoked whenever the server emits data
-    // // to the client. The data is then displayed in the "Received"
-    // // section of the page.
-    // socket.on('my_response', function(msg) {
-    //     $('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
-    // });
-
-    console.log(socket);
-    $('form#submitanswer').submit(function(event) {
-        {% for x in data.questions %}
-        socket.emit('verify_answer', {room: "{{data.name | safe}}", answer: document.getElementById("editor_output{{x}}").innerHTML.replace(/\n/ig, ''), question_index:  "{{x}}", curr_user: "{{data.current_user | safe}}"});
-        {% endfor %}
-        return false;
-    });
-
-    // Event handler for server sent data.
-    // The callback function is invoked whenever the server emits data
-    // to the client. The data is then displayed in the "Received"
-    // section of the page.
-    socket.on('my_response', function(msg) {
-        console.log(msg)
-        var isRoomComplete = true;
-        if (msg['verify'] == true) {
-            console.log(parseInt(msg['index']))
-            complete[parseInt(msg['index'])]=true
-        }
-        for (var i=0; i<complete.length; i++) {
-            if(complete[i]==false) {
-                isRoomComplete=false;
-                break;
-            }
-        }
-        //trigger socket stuff?
-        if (isRoomComplete) {
-            console.log("room complete")
-            window.location = '/static/leaderboard.html'
-            // socket.emit('send_to_leaderboard', {room: "{{data.name | safe}}"})
-        }
-        console.log(complete)
-        //$('#log').append('<br>' + $('<div/>').text('Received #' + msg.count + ': ' + msg.data).html());
-    });
 
 
-    // $('form#submitanswer').submit(function(event) {
-    //     var username = document.getElementById('username').value;
-    //     var roomname = document.getElementById('roomname').value;
-    //     console.log(username);
-    //     console.log(roomname);
-    //     socket.emit('join', { room: roomname, username: username });
-    //     return false;
-    // })
 
-})
 
-</script>
 
 </html>
